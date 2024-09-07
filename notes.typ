@@ -1,5 +1,6 @@
 #set image(width: 75%)
-= lec 2024/08/29
+// lect 2024/08/29
+= bit level manipulations
 - binary: get more precision over n-ary or smth 
 - and (`&`), or (`|`), not (`~`), xor (`^`)
 - shifts
@@ -7,15 +8,54 @@
     - throw away extra bits at left
     - fill with 0s on right
   - `x >> y`
-    - throw away extra bits at left
+    - throw away extra bits at right
     - logical shift: fill with 0s on left
     - arithmetic shift: replicate sign bit on left
     - _undefined_: shift amtn $<$ 0 or $>=$ word size
+- logical `&&`, `||`, `!`
+  - views 0 as false, nonzero as true
+  - returns 0 or 1
+
+= integers
+- limits
+  - `UMax` $= 2^w - 1$
+  - `TMin` $= -2^(w-1)$
+  - `TMax` $= 2^(w-1) - 1$
 - `-x = ~x + 1` in twos complement
   - but if `x = Tmin` (most negative two's complement), you get back `Tmin`
-- mix of signed and unsigned in expression eg ==? implicit casted and evaled in unsigned.
 
-= lec 2024/09/03
+== casting integers
+- constants are signed ints by default
+  - specify `10U` for unsigned or `24L` for long
+  - source of mistakes: make sure to, eg, `1ULL << 36`
+- signed $<-->$ unsigned: maintain bit pattern
+  - may add/substract $2^w$ (`0b1000` is 8 unsigned, -8 signed.)
+  - casting to larger? sign extend.
+  - casting to smaller? drop significant bits.
+- mix of signed and unsigned in expression (eg ==)? implicitly casted and evaled in unsigned.
+
+== byte order
+#figure(
+  table(
+    columns: 6, 
+    align: center,
+    $dots$, `0x100`, `0x101`, `0x110`, `0x111`, $dots$,
+    $dots$, `01`, `23`, `45`, `67`, $dots$
+  ),
+  caption: [big endian]
+)
+#figure(
+  table(
+    columns: 6, 
+    align: center,
+    $dots$, `0x100`, `0x101`, `0x110`, `0x111`, $dots$,
+    $dots$, `67`, `45`, `23`, `01`, $dots$
+  ),
+  caption: [little endian]
+)
+
+// lect 2024/09/03
+= history 
 - intel x86 processors
   - a Complex Instruction Set Computer (CISC), lots of instructions
   - Reduced: (RISC) can be fastish but esp good for low power
@@ -23,15 +63,13 @@
 - microarchitecture: implementation of architecture
 - machine code: byte-level programs processors exec.
 - assembly code: text readable machine code
-== assembly/machine code view
+= assembly/machine code view
 #image("media/machine_code_summary.png")
 - integer registers: prof: "compiler %rsp 64 bit, %esp 32 bit, compiler will spit out whichever is smaller and fits your data so b careful." also stuff like "%eax vs %ax vs %ah/%al"
 
 #image("media/movq_examples.png")
 
-= lec 2024/09/05
-- going over missed lecture notes from before:
-  - byte ordering: bigendian or little endian. needs to "flip" the order of bytes for little endian. this way, no need for padding bc least significant byte always at first.
+// lec 2024/09/05
 - lea instruction
   - intended to calculate pointer to obj: eg array elem
   - compiler authors end up using it to do arithmetic
