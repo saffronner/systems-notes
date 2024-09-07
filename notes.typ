@@ -1,4 +1,5 @@
 #set image(width: 75%)
+#outline()
 // lect 2024/08/29
 = bit level manipulations
 - binary: get more precision over n-ary or smth 
