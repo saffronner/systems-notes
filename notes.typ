@@ -1,5 +1,9 @@
 #set image(width: 75%)
-#outline()
+#set page(
+  numbering: "1 / 1",
+  paper: "us-letter"
+)
+#outline(indent: 1em)
 // lect 2024/08/29
 = bit level manipulations
 - binary: get more precision over n-ary or smth 
