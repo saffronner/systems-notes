@@ -12,11 +12,14 @@
   - `x << y`
     - throw away extra bits at left
     - fill with 0s on right
+    - $x dot 2^y$
   - `x >> y`
     - throw away extra bits at right
-    - logical shift: fill with 0s on left
-    - arithmetic shift: replicate sign bit on left
+    - unsigned shift: uses logical shift: fill with 0s on left
+    - signed shift: uses arithmetic shift: replicate sign bit on left
     - _undefined_: shift amtn $<$ 0 or $>=$ word size
+    - $floor(x " " \/ " " 2^y)$ i.e. rounding to left
+      - to round to zero ($ceil(x " " \/ " " 2^y)$): `(x + (1<<y)-1) >> y`
 - logical `&&`, `||`, `!`
   - views 0 as false, nonzero as true
   - returns 0 or 1
