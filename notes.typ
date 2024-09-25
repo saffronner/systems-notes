@@ -87,8 +87,6 @@
   - `Ri`: index register (any except %rsp). 
   - `S`: scale of 1, 2, 4, or 8. default: 1
 
-- 
-
 // lec 2024/09/05
 - `lea addr dest` instruction
   - sets dest to addr (eg `mov` instead dest to the value at that addr)
@@ -105,6 +103,7 @@
     - `0x400570(, %rbx, 2)` 0x is pointer, not rbx (why?) (assume blank `,` is 0)
     - `lea (anything), %rax` idk bro
 
+=== machine code: control
 - control flow  
   - lots of GOTOs. c0vm moment
 
@@ -138,4 +137,50 @@
   - do while, while, for loops (beginning conditional is often optimized away)
 
 - switch statements: jump tables
+  - notice a jump to a jump table: `jmpq *0x4007f0(,%rdi,8)` and a bunch of suspicious `ret`s
+  - to inspect a jump table in gdb, `x /8xg 0x4007f0` (8 outputs, hex, giant aka quad word)
 
+=== machine code: procedures
+- need to be able to 
+  - pass control to procedure and back to return
+  - pass data: args, return
+  - manage stack memory
+
+- these are implemented via machine instructions, which are defined by Application Binary Interface (ABI)
+
+- the stack
+  - grows top to down, bottom address is the "top" of stack: %rsp
+
+- first 6 args in registers, rest on stack
+
+- note: things have alignments and sizes. same for primitives. for complex (structs, arrays), alignments are of their largest component
+
+- note: when we see `sub $0x18, %rsp` for eg, we are "allocating" 18 bytes into the stack. or something. we will pop from stack later by adding 18 back to rsp.
+
+=== machine code: data
+- going over arrays (1d, nd, multilevel), structs (alloc, access, alignment), floats
+
+- arrays
+  - contiguous region of `length * sizeof(type)` bytes
+  - therefore, nd arrays get row-major ordered
+
+- structs
+  - fields ordered to declaration
+  - each element must satisfy its own alignment requirement
+  - entire struct (inital addr and its size) must be aligned to largest element's size
+  - tldr just save space by larger data types first
+
+- alignment restrictions
+  - 1 byte: `char, ...`
+    - no restrictions on address
+  - 2 bytes: `short, ...` 
+    - lowest 1 bit of address must be $0_2$
+  - 4 bytes: `int, float, ...`
+    - lowest 2 bits of address must be $00_2$
+  - 8 bytes: `double, long, char *, ...`
+    - lowest 3 bits of address must be $000_2$
+
+- floating point
+  - args passed in %xmm0, %xmm1, ...
+  - result in %xmm0
+  - all XMM registers call-clobbered
