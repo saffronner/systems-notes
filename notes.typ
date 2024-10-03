@@ -184,3 +184,88 @@
   - args passed in %xmm0, %xmm1, ...
   - result in %xmm0
   - all XMM registers call-clobbered
+
+=== machine code: advanced
+- Memory Layout: see the pdf
+- Buffer Overflow
+  - Vulnerability
+  - Protection
+    - Avoid overflow vulnerabilities (eg validate: we know we need max `n` chars)
+    - Employ system-level protections: randomized stack offsets, nonexecutable stack
+    - Have compiler use "stack canaries": right after buffer on stack; check for corruption
+  - Bypassing Protection: Return Oriented Programming attacks with gadgets
+- Unions
+
+== the memory hierarchy
+- "Memory Wall" or Von Neumann bottleneck: performance gap between cpu computation and ram data storage
+
+- Three approaches to work around it:
+  - *Build a hierarchy* (covered in here in 213)
+  - Find other stuff to do (346, 418)
+  - Move computation (346, 7xx?)
+
+toc:
+- The memory abstraction
+- RAM : main memory building block 
+- Locality of reference 
+- The memory hierarchy 
+- The memory mountain 
+- Storage technologies and trends 
+
+=== the memory abstraction
+- bus: a collection of parallel wires that carry address, data, and control signals.
+- buses are typically shared by multiple devices.
+- buses do the literal running of info, eg, from cpu regs to ram
+
+=== RAM
+- static (SRAM)
+- dynamic (DRAM)
+
+#image("media/RAM_slide1.png")
+#image("media/RAM_slide2.png")
+
+=== locality
+- a key to bridging CPU-memory gap
+- principle of locality: progs use addresses near previously used addresses (data, instructions)
+- temporal locality: same items likely to be referenced again
+- spatial locality: nearby addresses likely to be referenced together
+
+- fun fact: can have $sum$ 3d array with better spatial locality by making $j$ the inner loop
+
+=== memory hierarchy
+- properties of hard/software:
+  - faster = more expensive, hotter, less capacity
+  - CPU-memory gap widening
+  - good programs usually have good locality
+
+- this together implies a memory hierarchy *that gives the illusion of both large and fast memory. as cheap as the large memory, but fast as the memory at the top of the ladder*:
+
+#image("media/memory_hierarchy.png")
+#image("media/caching_speeds.png")
+
+- caches are hardware controlled (invisible to software!), memory is software controlled
+
+- transfer unit sizes are called "blocks"
+
+- cache hit: data is needed from a cache *and it is there*!
+
+- cache miss: data is needed from a cache *and it is NOT there*!
+  - the block is fetched from memory
+  - the block is stored in cache:
+  - placement policy: where does new block go?
+  - replacement policy: what gets kicked out? (the victim)
+  - types:
+    - cold (compulsory) miss: first reference to block
+    - capacity miss: \# of active cache blocks (size of "working set") >  size of cache
+    - conflict miss: like a hash collision
+
+=== memory mountain
+- read throughput/bandwidth: bytes read from memory per second
+
+- memory mountain: read bandwidth as a function of spatial and temporal locality
+  - characterizes memory system performance
+
+#image("media/memory_mountain.png")
+
+=== storage technologies and trends
+TODO lol 
